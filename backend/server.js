@@ -82,6 +82,8 @@ const server = http.createServer((req, res) => {
   if (req.method === "GET" && req.url === "/api/tasks") {
     return sendJson(res, 200, { success: true, data: tasks });
   }
+
+  //post 
   if (req.method === "POST" && req.url === "/api/tasks") {
   return (async () => {
     try {
@@ -106,7 +108,59 @@ const server = http.createServer((req, res) => {
       return sendJson(res, 400, { success: false, error: err.message });
     }
   })();
+}
+
+  // DELETE /api/tasks/:id
+if (req.method === "DELETE" && req.url.startsWith("/api/tasks/")) {
+  const id = getIdFromUrl(req.url, "/api/tasks/");
+  const index = tasks.findIndex((t) => t.id === id);
+
+  if (index === -1) {
+    return sendJson(res, 404, { success: false, error: "Task not found" });
   }
+
+  tasks.splice(index, 1);
+  return sendJson(res, 200, { success: true, message: "Task deleted" });
+}
+
+// PUT /api/tasks/:id
+if (req.method === "PUT" && req.url.startsWith("/api/tasks/")) {
+  return (async () => {
+    try {
+      const id = getIdFromUrl(req.url, "/api/tasks/");
+      const index = tasks.findIndex((t) => t.id === id);
+
+      if (index === -1) {
+        return sendJson(res, 404, { success: false, error: "Task not found" });
+      }
+
+      const body = await readJsonBody(req);
+
+      // light correctness validation
+      if (body.title !== undefined) {
+        if (typeof body.title !== "string" || !body.title.trim()) {
+          return sendJson(res, 400, { success: false, error: "Title must be a non-empty string" });
+        }
+      }
+
+      // update only provided fields
+      tasks[index] = {
+        ...tasks[index],
+        ...(body.title !== undefined ? { title: body.title.trim() } : {}),
+        ...(body.description !== undefined
+          ? { description: typeof body.description === "string" ? body.description.trim() : "" }
+          : {}),
+        ...(body.status !== undefined ? { status: body.status === "done" ? "done" : "open" } : {}),
+      };
+
+      return sendJson(res, 200, { success: true, data: tasks[index] });
+    } catch (err) {
+      return sendJson(res, 400, { success: false, error: err.message });
+    }
+  })();
+}
+
+
 
 
   // default: not found
