@@ -29,6 +29,41 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function readJsonBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk.toString();
+      // simple protection so someone can't send huge bodies
+      if (body.length > 1e6) {
+        req.destroy();
+        reject(new Error("Payload too large"));
+      }
+    });
+
+    req.on("end", () => {
+      if (!body) return resolve({});
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        reject(new Error("Invalid JSON"));
+      }
+    });
+
+    req.on("error", reject);
+  });
+}
+
+
+function getIdFromUrl(url, prefix) {
+  if (!url.startsWith(prefix)) return null;
+  const id = url.slice(prefix.length);
+  return id ? id : null;
+}
+
+
+
 const server = http.createServer((req, res) => {
   console.log(req.method, req.url);
 
@@ -42,10 +77,37 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
+
   // --- ROUTING (manual) ---
   if (req.method === "GET" && req.url === "/api/tasks") {
     return sendJson(res, 200, { success: true, data: tasks });
   }
+  if (req.method === "POST" && req.url === "/api/tasks") {
+  return (async () => {
+    try {
+      const body = await readJsonBody(req);
+
+      // Very light validation (not “security”, just correctness)
+      if (!body.title || typeof body.title !== "string" || !body.title.trim()) {
+        return sendJson(res, 400, { success: false, error: "Title is required" });
+      }
+
+      const task = {
+        id: String(Date.now()),
+        title: body.title.trim(),
+        description: typeof body.description === "string" ? body.description.trim() : "",
+        status: body.status === "done" ? "done" : "open",
+        createdAt: new Date().toISOString(),
+      };
+
+      tasks.unshift(task);
+      return sendJson(res, 201, { success: true, data: task });
+    } catch (err) {
+      return sendJson(res, 400, { success: false, error: err.message });
+    }
+  })();
+  }
+
 
   // default: not found
   return sendJson(res, 404, { success: false, error: "Route not found" });
