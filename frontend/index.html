@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kama Tasks</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+  <header class="container">
+    <h1>Kama Tasks</h1>
+    <p class="muted">UI skeleton (backend comes next)</p>
+  </header>
+
+  <main class="container grid">
+    <!-- Left: Form -->
+    <section class="card">
+      <h2 id="formTitle">Create Task</h2>
+
+      <form id="taskForm">
+        <!-- used later for editing -->
+        <input type="hidden" id="taskId" />
+
+        <label>
+          Title
+          <input id="title" type="text" placeholder="e.g., Learn Express" required />
+        </label>
+
+        <label>
+          Description
+          <textarea id="description" rows="4" placeholder="Short description..."></textarea>
+        </label>
+
+        <label>
+          Status
+          <select id="status">
+            <option value="open">open</option>
+            <option value="done">done</option>
+          </select>
+        </label>
+
+        <div class="row">
+          <button type="submit" id="submitBtn">Save</button>
+          <button type="button" id="cancelBtn" class="secondary" hidden>Cancel</button>
+        </div>
+      </form>
+
+      <p id="message" class="message" hidden></p>
+    </section>
+
+    <!-- Right: List -->
+    <section class="card">
+      <div class="row space-between">
+        <h2>Tasks</h2>
+        <button id="refreshBtn" class="secondary" type="button">Refresh</button>
+      </div>
+
+      <ul id="taskList" class="list"></ul>
+
+      <!-- Template for tasks (we will use later) -->
+      <template id="taskItemTemplate">
+        <li class="item">
+          <div class="item-main">
+            <div class="row space-between">
+              <strong class="item-title"></strong>
+              <span class="badge"></span>
+            </div>
+            <p class="item-desc muted"></p>
+            <small class="item-date muted"></small>
+          </div>
+
+          <div class="item-actions">
+            <button class="editBtn secondary" type="button">Edit</button>
+            <button class="deleteBtn danger" type="button">Delete</button>
+          </div>
+        </li>
+      </template>
+    </section>
+  </main>
+
+  <footer class="container muted footer">
+    <small>Backend practice project — intentionally simple.</small>
+  </footer>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
