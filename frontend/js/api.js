@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://192.168.28.158:3000";
 
 async function parseJson(res) {
   const data = await res.json().catch(() => ({}));
