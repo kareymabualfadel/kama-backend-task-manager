@@ -1,4 +1,5 @@
-const BASE_URL = "http://192.168.28.158:3000";
+const BASE_URL =
+  localStorage.getItem("API_BASE_URL") || "http://127.0.0.1:3000";
 
 function authHeader() {
   const token = localStorage.getItem("token");
@@ -13,9 +14,7 @@ async function parseJson(res) {
 
 export async function getTasks() {
   const res = await fetch(`${BASE_URL}/api/tasks`, {
-    headers: {
-      ...authHeader(),
-    },
+    headers: { ...authHeader() },
   });
   return parseJson(res);
 }
@@ -47,9 +46,7 @@ export async function updateTask(id, payload) {
 export async function deleteTask(id) {
   const res = await fetch(`${BASE_URL}/api/tasks/${id}`, {
     method: "DELETE",
-    headers: {
-      ...authHeader(),
-    },
+    headers: { ...authHeader() },
   });
   return parseJson(res);
 }
