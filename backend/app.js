@@ -1,8 +1,26 @@
 const express = require("express");
 const app = express();
 const taskRoutes = require("./routes/taskRoutes.js");
+const logger = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
+const helmet = require("helmet");
 
 app.use(express.json());
+
+
+
+app.use(logger);
+app.use(errorHandler);
+app.use(helmet());
+
+
+
+const authRoutes = require("./routes/authRoutes");
+app.use("/auth", authRoutes);
+
+
+
+
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -17,6 +35,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/tasks", taskRoutes);
+
 
 
 module.exports = app;
