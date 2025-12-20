@@ -1,5 +1,10 @@
 import { getTasks, createTask, updateTask, deleteTask } from "./api.js";
 
+// ---- Auth guard ----
+if (!localStorage.getItem("token")) {
+  window.location.href = "login.html";
+}
+
 const els = {
   taskList: document.getElementById("taskList"),
   template: document.getElementById("taskItemTemplate"),
@@ -83,7 +88,13 @@ function renderTasks(tasks) {
         await loadTasks();
         setCreateMode();
       } catch (err) {
+        if (String(err.message).includes("401")) {
+          localStorage.removeItem("token");
+          window.location.href = "login.html";
+          return;
+        }
         showMessage(`Delete failed: ${err.message}`, true);
+        console.error(err);
       }
     });
 
@@ -97,6 +108,12 @@ async function loadTasks() {
     renderTasks(res.data);
   } catch (err) {
     renderTasks([]);
+    // If token expired/invalid -> redirect to login
+    if (String(err.message).includes("401") || String(err.message).toLowerCase().includes("unauthorized")) {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return;
+    }
     showMessage(`Failed to load: ${err.message}`, true);
     console.error(err);
   }
@@ -130,6 +147,11 @@ els.taskForm.addEventListener("submit", async (e) => {
     await loadTasks();
     setCreateMode();
   } catch (err) {
+    if (String(err.message).includes("401") || String(err.message).toLowerCase().includes("unauthorized")) {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return;
+    }
     showMessage(`Save failed: ${err.message}`, true);
     console.error(err);
   }

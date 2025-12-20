@@ -1,41 +1,40 @@
 const express = require("express");
-const app = express();
-const taskRoutes = require("./routes/taskRoutes.js");
-const logger = require("./middleware/logger");
-const errorHandler = require("./middleware/errorHandler");
+const cors = require("cors");
 const helmet = require("helmet");
 
+const taskRoutes = require("./routes/taskRoutes.js");
+const authRoutes = require("./routes/authRoutes");
+const logger = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
+
+const app = express();
+
+// Parse JSON
 app.use(express.json());
 
-
-
+// Logging + security headers
 app.use(logger);
-app.use(errorHandler);
 app.use(helmet());
 
+// CORS (must be BEFORE routes)
+app.use(
+  cors({
+    origin: [
+      "http://192.168.28.158:5500",
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+  })
+);
 
-
-const authRoutes = require("./routes/authRoutes");
+// Routes
 app.use("/auth", authRoutes);
-
-
-
-
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
-
 app.use("/api/tasks", taskRoutes);
 
-
+// Error handler should be LAST
+app.use(errorHandler);
 
 module.exports = app;
