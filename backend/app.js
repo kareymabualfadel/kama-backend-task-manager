@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const taskRoutes = require("./routes/taskRoutes.js");
 const authRoutes = require("./routes/authRoutes");
+const adminUserRoutes = require("./routes/adminUserRoutes");
 
 const logger = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
@@ -24,8 +25,10 @@ app.use(
   })
 );
 
-app.use("/auth", authRoutes);
+// Routes
+app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/admin/users", adminUserRoutes);
 
 // error handler should be LAST
 app.use(errorHandler);

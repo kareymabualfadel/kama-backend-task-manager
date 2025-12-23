@@ -1,8 +1,15 @@
 import { getTasks, createTask, updateTask, deleteTask } from "./api.js";
 
+// ---- Helpers ----
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user"); // if you stored it in login.js
+  window.location.href = "login.html";
+}
+
 // ---- Auth guard ----
 if (!localStorage.getItem("token")) {
-  window.location.href = "login.html";
+  logout();
 }
 
 const els = {
@@ -19,6 +26,9 @@ const els = {
   cancelBtn: document.getElementById("cancelBtn"),
   refreshBtn: document.getElementById("refreshBtn"),
   message: document.getElementById("message"),
+
+  // NEW: logout button (add it in index.html)
+  logoutBtn: document.getElementById("logoutBtn"),
 };
 
 function showMessage(text, isError = false) {
@@ -88,9 +98,9 @@ function renderTasks(tasks) {
         await loadTasks();
         setCreateMode();
       } catch (err) {
-        if (String(err.message).includes("401")) {
-          localStorage.removeItem("token");
-          window.location.href = "login.html";
+        const msg = String(err.message || "");
+        if (msg.includes("401") || msg.toLowerCase().includes("unauthorized")) {
+          logout();
           return;
         }
         showMessage(`Delete failed: ${err.message}`, true);
@@ -108,10 +118,10 @@ async function loadTasks() {
     renderTasks(res.data);
   } catch (err) {
     renderTasks([]);
+    const msg = String(err.message || "");
     // If token expired/invalid -> redirect to login
-    if (String(err.message).includes("401") || String(err.message).toLowerCase().includes("unauthorized")) {
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
+    if (msg.includes("401") || msg.toLowerCase().includes("unauthorized")) {
+      logout();
       return;
     }
     showMessage(`Failed to load: ${err.message}`, true);
@@ -147,9 +157,9 @@ els.taskForm.addEventListener("submit", async (e) => {
     await loadTasks();
     setCreateMode();
   } catch (err) {
-    if (String(err.message).includes("401") || String(err.message).toLowerCase().includes("unauthorized")) {
-      localStorage.removeItem("token");
-      window.location.href = "login.html";
+    const msg = String(err.message || "");
+    if (msg.includes("401") || msg.toLowerCase().includes("unauthorized")) {
+      logout();
       return;
     }
     showMessage(`Save failed: ${err.message}`, true);
@@ -166,6 +176,15 @@ els.refreshBtn.addEventListener("click", () => {
   hideMessage();
   loadTasks();
 });
+
+// NEW: logout click
+if (els.logoutBtn) {
+  els.logoutBtn.addEventListener("click", () => {
+    const ok = confirm("Logout now?");
+    if (!ok) return;
+    logout();
+  });
+}
 
 // init
 setCreateMode();

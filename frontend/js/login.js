@@ -1,31 +1,61 @@
+import { login, register } from "./api.js";
+
 const form = document.getElementById("loginForm");
 const errorEl = document.getElementById("error");
 
-const BASE_URL =
-  localStorage.getItem("API_BASE_URL") || "http://127.0.0.1:3000";
+// Inputs
+const usernameEl = document.getElementById("username");
+const passwordEl = document.getElementById("password");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  errorEl.textContent = "";
+// Buttons
+const signupBtn = document.getElementById("signupBtn");
 
-  const username = document.getElementById("username").value.trim();
+function setError(msg) {
+  errorEl.textContent = msg || "";
+}
+
+async function doAuth(mode) {
+  setError("");
+
+  const username = (usernameEl.value || "").trim();
+  const password = passwordEl.value || "";
+
+  if (!username) return setError("Username is required");
+  if (!password || password.length < 6) return setError("Password must be at least 6 characters");
 
   try {
-    const res = await fetch(`${BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
-    });
+    const result =
+      mode === "signup"
+        ? await register(username, password)
+        : await login(username, password);
 
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Login failed");
-
-    const token = data.accessToken || data.token || data.access_token;
+    // backend returns: { success: true, data: { token, user: {...} } }
+    const token = result?.data?.token;
     if (!token) throw new Error("No token returned by server");
 
     localStorage.setItem("token", token);
+
+    // optional: keep user info for UI later
+    if (result?.data?.user) {
+      localStorage.setItem("user", JSON.stringify(result.data.user));
+    }
+
     window.location.href = "index.html";
   } catch (err) {
-    errorEl.textContent = err.message || "Failed to fetch";
+    setError(err.message || "Failed to fetch");
   }
+}
+
+// Login by default on form submit
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  await doAuth("login");
 });
+
+// Signup button click
+if (signupBtn) {
+  signupBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    await doAuth("signup");
+  });
+}
