@@ -74,3 +74,78 @@ export async function login(username, password) {
   });
   return parseJson(res);
 }
+
+// ---- Admin Users (protected) ----
+export async function getAdminUsers() {
+  const res = await fetch(`${BASE_URL}/api/admin/users`, {
+    headers: { ...authHeader() },
+  });
+  return parseJson(res);
+}
+
+export async function createAdminUser(payload) {
+  const res = await fetch(`${BASE_URL}/api/admin/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeader(),
+    },
+    body: JSON.stringify(payload),
+  });
+  return parseJson(res);
+}
+
+export async function updateAdminUser(id, payload) {
+  const res = await fetch(`${BASE_URL}/api/admin/users/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeader(),
+    },
+    body: JSON.stringify(payload),
+  });
+  return parseJson(res);
+}
+
+export async function deleteAdminUser(id) {
+  const res = await fetch(`${BASE_URL}/api/admin/users/${id}`, {
+    method: "DELETE",
+    headers: { ...authHeader() },
+  });
+  return parseJson(res);
+}
+
+// ---- Admin Tasks (protected) ----
+export async function getAdminAllTasks() {
+  const res = await fetch(`${BASE_URL}/api/admin/tasks`, {
+    headers: { ...authHeader() },
+  });
+  return parseJson(res);
+}
+
+export async function getAdminTasksForUser(userId) {
+  const res = await fetch(`${BASE_URL}/api/admin/tasks?userId=${userId}`, {
+    headers: { ...authHeader() },
+  });
+  return parseJson(res);
+}
+
+export async function updateAdminTask(id, payload) {
+  const res = await fetch(`${BASE_URL}/api/admin/tasks/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeader(),
+    },
+    body: JSON.stringify(payload),
+  });
+  return parseJson(res);
+}
+
+export async function deleteAdminTask(id) {
+  const res = await fetch(`${BASE_URL}/api/admin/tasks/${id}`, {
+    method: "DELETE",
+    headers: { ...authHeader() },
+  });
+  return parseJson(res);
+}

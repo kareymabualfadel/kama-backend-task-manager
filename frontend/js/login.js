@@ -38,9 +38,15 @@ async function doAuth(mode) {
     // optional: keep user info for UI later
     if (result?.data?.user) {
       localStorage.setItem("user", JSON.stringify(result.data.user));
+      // Redirect admin to admin.html, regular users to index.html
+      if (result.data.user.role === "admin") {
+        window.location.href = "admin.html";
+      } else {
+        window.location.href = "index.html";
+      }
+    } else {
+      window.location.href = "index.html";
     }
-
-    window.location.href = "index.html";
   } catch (err) {
     setError(err.message || "Failed to fetch");
   }
