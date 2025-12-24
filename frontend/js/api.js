@@ -1,5 +1,5 @@
-const BASE_URL =
-  localStorage.getItem("API_BASE_URL") || "http://127.0.0.1:3000";
+// Use relative URLs so the frontend calls the same server it's served from
+const BASE_URL = "";
 
 function getToken() {
   return localStorage.getItem("token");
