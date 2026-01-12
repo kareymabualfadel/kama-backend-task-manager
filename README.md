@@ -1,299 +1,228 @@
+📦 Kama Task Manager — Full-Stack Backend + Security Project
 
-# 🗂️ Kama Tasks — Full-Stack Task Manager (User + Admin Management)
+A full-stack Node.js application that progressively evolved from a simple CRUD web app into a secure multi-user and role-based backend architecture with penetration testing and admin-level management capabilities.
 
-A full-stack task management system with:
+This project demonstrates how to design, extend, and secure a modern backend application while applying real-world software engineering and security concepts.
 
-✔ 🧑 User accounts (signup/login)  
-✔ 🛂 Role-based access (User + Admin)  
-✔ 📝 Per-user task CRUD  
-✔ 🧑‍💼 Admin dashboard with user & task management  
-✔ 🔐 JWT authentication + password hashing  
-✔ 🛡️ Manual penetration testing + security validation  
-✔ 🧱 Clean MVC backend architecture  
-✔ 🌐 Frontend REST integration  
-✔ 🧰 MongoDB persistence with ownership binding  
+🎯 Key Features
 
-This project was built to simulate **real-world multi-user systems**, practice **secure API design**, and prepare for **DevSecOps CI/CD integration**.
+✔ RESTful task management API
+✔ MongoDB persistence with Mongoose
+✔ JWT authentication (login + register)
+✔ Authorization w/ role-based access control
+✔ Admin dashboard with user & task management
+✔ Validation middleware & centralized error handling
+✔ Clean MVC architecture (routes/controllers/models)
+✔ Frontend integration via Fetch API
+✔ Penetration testing focused on security exposures
+✔ Docker deployment (optional)
 
----
+🧩 Skills & Concepts Demonstrated
 
-## 🎯 **Project Purpose**
+This project teaches and demonstrates how to design, secure, and extend a backend application:
 
-This project teaches and demonstrates **how to design**, **secure**, and **extend** a modern backend application:
+✔ Authentication + Authorization
+✔ Data modeling + persistence
+✔ REST API best practices
+✔ RBAC (Role-Based Access Control)
+✔ Admin-only operations
+✔ State + trust boundaries
+✔ Security testing
+✔ Clean code separation (MVC)
+✔ Deployment readiness
+✔ Dockerization (optional)
 
-✔ Authentication + Authorization  
-✔ Data modeling + persistence  
-✔ REST API best practices  
-✔ Role-based access control  
-✔ Admin-only operations  
-✔ State + trust boundaries  
-✔ Security testing  
-✔ Clean code separation (MVC)  
-✔ Deployment readiness (Docker)  
-
----
-
-## 🧱 **High-Level Architecture**
-
-```mermaid
+🧱 High-Level Architecture
 flowchart TB
     FRONTEND[Frontend\nHTML/JS/CSS]
     BACKEND[Node.js + Express\nMVC + JWT]
     DB[(MongoDB)]
 
     FRONTEND -->|HTTP/REST + JWT| BACKEND --> DB
+    BACKEND --> DB
 
-🗄️ Technology Stack
+🧰 Technology Stack
+Layer	Tech
+Frontend	HTML, CSS, Vanilla JS
+Backend	Node.js + Express
+Auth	JWT (Bearer tokens)
+DB	MongoDB (Mongoose ODM)
+Roles	user + admin
+Architecture	MVC
+Deployment	Docker (optional)
+👥 User Roles & Permissions
+Standard User
 
-Frontend
+✔ Create tasks
+✔ Edit tasks
+✔ Delete tasks
+✔ View only their own tasks
 
-HTML + CSS + Vanilla JavaScript
+Admin User
 
-LocalStorage token handling
+Admin can additionally:
 
-REST API calls
-
-Role-based redirection
-
-Backend
-
-Node.js (Express)
-
-JWT Authentication
-
-BCrypt password hashing
-
-MVC architecture (controllers, routes, middleware)
-
-Admin & user roles
-
-RBAC enforcement
-
-Database
-
-MongoDB + Mongoose
-
-ObjectID binding (task.user → User._id)
-
-Schemas + timestamps
-
-👥 User Roles
-Role	Permissions
-User	CRUD only own tasks
-Admin	CRUD users + CRUD all tasks + CRUD own tasks
-🧩 Key Features
-🔐 Authentication & Authorization
-
-JWT issued on login/signup
-
-Protected API routes with middleware
-
-Password hashing via BCrypt
-
-LocalStorage token persistence
-
-Role-based redirection:
-
-user → index.html
-
-admin → admin.html
-
-🗂️ Task Management
-
-Create / Edit / Delete tasks
-
-Status updates (open / done)
-
-Task ownership enforced in backend
-
-Admin can operate on all tasks
-
-👤 User Management (Admin Dashboard)
-
-Admin can:
-✔ Create users
+✔ Create / edit / delete users
+✔ View all users
+✔ View all tasks
+✔ Manage any user’s tasks
 ✔ Assign roles
-✔ Edit users
-✔ Delete users
-✔ View tasks by user
-✔ Create tasks for other users
 
-🧱 Backend Folder Structure (MVC)
+🔐 Security Features
+
+🛡 JWT authentication (Bearer scheme)
+🛡 Password hashing (bcrypt)
+🛡 Protected routes middleware
+🛡 RBAC-based access control
+🛡 Input validation + sanitization
+🛡 Centralized error handling
+🛡 No sensitive data stored client-side
+
+🧪 Penetration Testing Performed
+
+The application was manually tested for realistic web attack scenarios including:
+
+✔ Authentication & session abuse
+✔ Privilege escalation attempts
+✔ Forced browsing
+✔ Broken access control across users/admin
+✔ Task ownership bypass attempts
+✔ Redirect / token replay attempts
+✔ JSON tampering
+✔ CORS misconfiguration checks
+✔ Input validation failures
+✔ Stored (persistent) XSS attempts
+✔ Blind/Reflected XSS attempts
+✔ CSRF feasibility
+✔ Local network exposure testing (0.0.0.0 vs localhost)
+
+No automated scanners — all tests were performed manually to simulate attacker intent.
+
+🏗 Backend Architecture (MVC)
 backend/
-  controllers/
-  middleware/
-  models/
-  routes/
-  config/
-  server.js
-  app.js
-frontend/
-  index.html
-  admin.html
-  login.html
-  js/
+ ├── controllers/
+ ├── models/
+ ├── routes/
+ ├── middleware/
+ ├── config/
+ └── server.js
 
+Controllers
 
-This separation prepares the system for:
+Handle business logic
 
-✔ scaling
-✔ testing
-✔ CI/CD
-✔ containerization
-✔ microservices
+Routes
 
-🔴 Security & Penetration Testing (Manual Offensive Validation)
+Define REST endpoints
 
-Before CI/CD or deployment, the system underwent targeted manual penetration testing focusing on auth, RBAC, trust, and ownership.
+Models
 
-🧪 Tested Attack Surfaces
-1. Authentication
+Define MongoDB schemas
 
-Attacks tried:
+Middleware
 
-Null credential bypass
+Auth, validation, error handling
 
-Token reuse/replay
+🖥 Admin Dashboard
 
-JWT tampering
+Admin dashboard provides:
 
-Signature manipulation
+✔ User CRUD
+✔ Task CRUD (own + others)
+✔ User filtering
+✔ Modal-based editing
+✔ Role assignment
 
-Mitigation:
-✔ JWT signature enforcement
-✔ Hash comparison via BCrypt
+❗ Trust Boundaries
 
-2. Authorization & RBAC
+This project intentionally models trust boundaries:
 
-Tested for:
+Boundary	Concern
+Client → API	Authentication + input validation
+API → DB	Data integrity + injection
+User → Admin	Authorization
+Admin → System	Privilege separation
 
-Vertical escalation: user → admin
+Understanding these is critical for real-world DevSecOps and PT work.
 
-Horizontal escalation: userA → userB tasks
-
-Forced browsing: /api/admin/...
-
-Mitigation:
-✔ authRequired + requireAdmin middleware
-✔ ownership checks on task queries
-
-3. Stored Content Injection
-
-Payloads:
-
-<script>alert(1)</script>
-<img src=x onerror=alert(1)>
-
-
-Outcome:
-Stored XSS possible in raw browser UI → planned mitigation via escaping.
-
-4. Network Exposure
-
-Checked:
-
-Binding (localhost vs 0.0.0.0)
-
-LAN reachability
-
-NAT barriers
-
-Port scanning via Nmap
-
-Outcome:
-App limited to LAN, router blocks WAN unless port-forwarded.
-
-5. Direct API Abuse
-
-Using curl/Postman to bypass UI:
-
-curl -X POST /api/tasks
-
-
-Outcome:
-✔ returns 401 without token
-
-📦 Security Improvements Implemented
-
-✔ JWT auth
-✔ BCrypt password hashing
-✔ Role-based access control
-✔ CORS policies
-✔ Helmet secure headers
-✔ Input validation
-✔ Enum validation
-✔ Centralized error handling
-
-🧬 How This Supports DevSecOps
-
-This backend is now ready for:
-
-✔ Docker
-✔ Jenkins / GitHub Actions CI/CD
-✔ Image scanning (Trivy)
-✔ IaC (Terraform)
-✔ Kubernetes
-✔ Monitoring (ELK/Prometheus)
-
-Security here is Phase 0:
-
-Build → Attack → Fix → Automate → Enforce
-
-🐳 Dockerization (Future)
-
-Container planned:
-
-FROM node:18
-WORKDIR /app
-COPY . .
-npm install
-CMD ["node", "server.js"]
-
-📦 API Overview
-Auth Routes
+🛠 API Endpoints Overview
+Auth
 POST /api/auth/register
 POST /api/auth/login
 
-User Routes (Admin)
+Tasks (User)
+GET /api/tasks/
+POST /api/tasks/
+PUT /api/tasks/:id
+DELETE /api/tasks/:id
+
+Admin
 GET /api/admin/users
 POST /api/admin/users
 PUT /api/admin/users/:id
 DELETE /api/admin/users/:id
 
-Task Routes (User)
-GET /api/tasks
-POST /api/tasks
-PUT /api/tasks/:id
-DELETE /api/tasks/:id
-
-Task Routes (Admin)
 GET /api/admin/tasks
-GET /api/admin/tasks?user=123
 POST /api/admin/tasks
 PUT /api/admin/tasks/:id
 DELETE /api/admin/tasks/:id
 
-🚀 Next Planned Steps
+🗄 Database Models
+User
+{
+  username,
+  passwordHash,
+  role
+}
 
-OAuth2 / SSO login
+Task
+{
+  user,
+  title,
+  description,
+  status
+}
 
-MFA / TOTP
+🐳 Docker Deployment (Optional)
 
-Audit logs
+Project includes a Dockerfile for containerized deployment:
 
-Web UI improvements
+✔ portable
+✔ reproducible
+✔ production-friendly
 
-WebSockets for real-time status
+🚀 Future Enhancements
 
-CI/CD integration
+Planned improvements:
 
-Kubernetes deployment
+⬜ Refresh tokens + logout
+⬜ 2FA for admin
+⬜ Audit logs / event tracking
+⬜ Email reset flows
+⬜ Role editor UI
+⬜ Kubernetes deployment (ties to CI/CD project)
 
-Secret scanning & image scanning
+🎓 Why This Project Matters
 
-🧠 Final Notes
+This isn’t a “tutorial clone”.
 
-This project is not just a CRUD app — it is a security-aware, multi-user backend built to mimic real production concerns:
+This app was:
 
-authentication → authorization → ownership → persistence → exposure → security → DevOps
-Just tell me which format.
+✔ designed
+✔ extended
+✔ secured
+✔ tested
+
+with a real engineering mindset relevant to:
+
+⭐ Software development
+⭐ Backend engineering
+⭐ Penetration testing
+⭐ DevSecOps
+⭐ Cloud deployment
+
+🧠 Final Note
+
+“Security is understanding how software actually behaves.”
+
+This project represents that philosophy: build, break, secure, improve.
