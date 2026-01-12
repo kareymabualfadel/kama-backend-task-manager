@@ -296,16 +296,4 @@ Secret scanning & image scanning
 This project is not just a CRUD app — it is a security-aware, multi-user backend built to mimic real production concerns:
 
 authentication → authorization → ownership → persistence → exposure → security → DevOps
-
-
----
-
-# If you want, I can also generate:
-
-✅ CV bullet for this project  
-✅ Portfolio website section  
-✅ LinkedIn announcement post  
-✅ Interview explanation  
-✅ Demo video script  
-
 Just tell me which format.
